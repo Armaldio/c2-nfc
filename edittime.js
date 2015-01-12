@@ -57,7 +57,9 @@
 // example				
 //AddNumberParam("Number", "Enter a number to test if positive.");
 AddCondition(0, cf_trigger, "On tag read", "Tag", "On tag read", "When any tag is triggered", "onAnyTagDiscovered");
+
 AddCondition(1, cf_none, "NFC available", "Tag", "NFC available", "If NFC is available on this mobile", "onNFCAvailable");
+AddCondition(10, cf_none, "NFC not available", "Tag", "NFC Not  available", "If NFC isNot Not available on this mobile", "onNFCNotAvailable");
 
 AddCondition(2, cf_trigger, "on wait for tag", "Tag", "on wait for tag", "on wait for tag", "onWaitForTag");
 
@@ -74,6 +76,10 @@ AddCondition(7, cf_trigger, "on Share success", "Tag", "on Share success", "on S
 AddCondition(8, cf_trigger, "on Erase fail", "Tag", "on Erase fail", "on Erase fail", "onEraseFail");
 
 AddCondition(9, cf_trigger, "on Erase success", "Tag", "on Erase success", "on Erase success", "onEraseSuccess");
+
+AddCondition(11, cf_trigger, "on Read fail", "Tag", "on Read fail", "on Read fail", "onReadFail");
+
+AddCondition(12, cf_trigger, "on Read success", "Tag", "on Read success", "on Read success", "onReadSuccess");
 
 
 ////////////////////////////////////////
@@ -98,11 +104,16 @@ AddAction(2, af_none, "Share data", "Actions", "Wait for tag and share {0}", "Wa
 AddStringParam("Message", "Enter the string to write");
 AddAction(3, af_none, "Write data", "Actions", "Wait for tag and write the message {0}", "Write data to tag", "write");
 
-AddAction(4, af_none, "Erase tag", "Actions", "Wait for tag and erase it", "Wait for tag and erase tag", "erase");
+AddAction(4, af_none, "Erase tag", "Actions", "Wait for tag and erase it", "Wait for tag and erase it", "erase");
+
+AddAction(7, af_none, "Read tag", "Actions", "Wait for tag and Read it", "Wait for tag and Read it", "read");
 
 AddAction(5, af_none, "Remove NDEF listener", "Actions", "Removes the previously registered event listener", "Removes the previously registered event listener for NDEF tags added", "removeListener");
 
-////////////////////////////////////////
+AddAction(6, af_none, "Check NFC Availablity", "Actions", "Check NFC Availablity", "Check NFC Availablity", "checkNFC");
+
+
+////////////////////////////////////////Check NFC Availablity
 // Expressions
 
 // AddExpression(id,			// any positive integer to uniquely identify this expression
@@ -114,9 +125,9 @@ AddAction(5, af_none, "Remove NDEF listener", "Actions", "Removes the previously
 //				 description);	// description in expressions panel
 
 // example
-//AddExpression(0, ef_return_number, "Leet expression", "My category", "MyExpression", "Return the number 1337.");
+AddExpression(0, ef_return_any, "Return the last readed datas", "Datas", "getLastData", "Return the last readed datas");
 
-////////////////////////////////////////
+////////////////Return the last readed datas////////////////////////
 ACESDone();
 
 ////////////////////////////////////////

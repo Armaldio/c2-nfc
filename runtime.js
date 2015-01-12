@@ -6,6 +6,7 @@ assert2(cr.plugins_, "cr.plugins_ not created");
 
 var rt;
 var nfc;
+var lastData, lastID;
 
 /////////////////////////////////////
 // Plugin class
@@ -161,6 +162,14 @@ cr.plugins_.nfc = function (runtime) {
         return true;
     };
 
+    Cnds.prototype.onReadSuccess = function () {
+        return true;
+    };
+
+    Cnds.prototype.onReadFail = function () {
+        return true;
+    };
+
     Cnds.prototype.onErrorListenerRemoved = function () {
         return true;
     };
@@ -169,13 +178,15 @@ cr.plugins_.nfc = function (runtime) {
         return true;
     };
 
-    /*Cnds.prototype.onNFCAvailable = function () {
-        nfc.enabled(function () {
-            return true;
-        }, function (err) {
-            return false;
-        });
-    };*/
+    Cnds.prototype.onNFCAvailable = function () {
+        return true;
+    };
+
+    Cnds.prototype.onNFCNotAvailable = function () {
+        return true;
+    };
+
+
 
     // ... other conditions here ...
 
@@ -185,7 +196,21 @@ cr.plugins_.nfc = function (runtime) {
     // Actions
     function Acts() { };
 
-    
+
+    Acts.prototype.checkNFC = function () {
+        var self = this;
+
+        /*nfc.enabled(function () {
+            self.runtime.trigger(cr.plugins_.nfc.prototype.cnds.onNFCAvailable, self);
+        }, function (err) {
+            self.runtime.trigger(cr.plugins_.nfc.prototype.cnds.onNFCNotAvailable, self);
+            //TODO: Put err in an expression
+        });
+        */
+
+        return true;
+    };
+
     Acts.prototype.removeListener = function () {
         var self = this;
 
@@ -219,7 +244,7 @@ cr.plugins_.nfc = function (runtime) {
 
     };
 
-    Acts.prototype.erase = function (text) {
+    Acts.prototype.erase = function () {
         var self = this;
 
         nfc.addNdefListener(function (nfcEvent) {
@@ -231,6 +256,23 @@ cr.plugins_.nfc = function (runtime) {
         }, function () {
             self.runtime.trigger(cr.plugins_.nfc.prototype.cnds.onWaitForTag, self);
         }, function (err) {
+            self.runtime.trigger(cr.plugins_.nfc.prototype.cnds.onErrorWaitingTag, self);
+        });
+
+    };
+
+    Acts.prototype.read = function () {
+        var self = this;
+
+        nfc.addNdefListener(function (nfcEvent) {
+            //trigger
+            lastData = JSON.stringify(nfcEvent.tag)
+            self.runtime.trigger(cr.plugins_.nfc.prototype.cnds.onReadSuccess, self);
+        }, function () {
+            //win
+            self.runtime.trigger(cr.plugins_.nfc.prototype.cnds.onWaitForTag, self);
+        }, function (err) {
+            //fail
             self.runtime.trigger(cr.plugins_.nfc.prototype.cnds.onErrorWaitingTag, self);
         });
 
@@ -267,13 +309,13 @@ cr.plugins_.nfc = function (runtime) {
     // Expressions
     function Exps() { };
 
-    /*Exps.prototype.MyExpression = function (ret) // 'ret' must always be the first parameter - always return the expression's result through it!
+    Exps.prototype.getLastData = function (ret) // 'ret' must always be the first parameter - always return the expression's result through it!
     {
         //ret.set_int(1337); // return our value
         // ret.set_float(0.5);			// for returning floats
         // ret.set_string("Hello");		// for ef_return_string
-        // ret.set_any("woo");			// for ef_return_any, accepts either a number or string
-    };*/
+        ret.set_any(lastData);			// for ef_return_any, accepts either a number or string
+    };
 
 
     pluginProto.exps = new Exps();
