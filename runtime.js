@@ -5,6 +5,7 @@ assert2(cr, "cr namespace not created");
 assert2(cr.plugins_, "cr.plugins_ not created");
 
 var rt;
+var nfc;
 
 /////////////////////////////////////
 // Plugin class
@@ -168,13 +169,13 @@ cr.plugins_.nfc = function (runtime) {
         return true;
     };
 
-    Cnds.prototype.onNFCAvailable = function () {
+    /*Cnds.prototype.onNFCAvailable = function () {
         nfc.enabled(function () {
             return true;
         }, function (err) {
             return false;
         });
-    };
+    };*/
 
     // ... other conditions here ...
 
@@ -266,13 +267,13 @@ cr.plugins_.nfc = function (runtime) {
     // Expressions
     function Exps() { };
 
-    Exps.prototype.MyExpression = function (ret) // 'ret' must always be the first parameter - always return the expression's result through it!
+    /*Exps.prototype.MyExpression = function (ret) // 'ret' must always be the first parameter - always return the expression's result through it!
     {
         //ret.set_int(1337); // return our value
         // ret.set_float(0.5);			// for returning floats
         // ret.set_string("Hello");		// for ef_return_string
         // ret.set_any("woo");			// for ef_return_any, accepts either a number or string
-    };
+    };*/
 
 
     pluginProto.exps = new Exps();
