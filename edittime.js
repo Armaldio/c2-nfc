@@ -81,6 +81,10 @@ AddCondition(11, cf_trigger, "on Read fail", "Tag", "on Read fail", "on Read fai
 
 AddCondition(12, cf_trigger, "on Read success", "Tag", "on Read success", "on Read success", "onReadSuccess");
 
+AddCondition(13, cf_trigger, "on removed trigger successfully", "Tag", "on removed trigger successfully", "on removed trigger successfully", "onListenerRemoved");
+
+AddCondition(14, cf_trigger, "on error removing trigger", "Tag", "on error removing trigger", "on error removing trigger", "onErrorListenerRemoved");
+
 
 ////////////////////////////////////////
 // Actions
@@ -99,18 +103,18 @@ AddCondition(12, cf_trigger, "on Read success", "Tag", "on Read success", "on Re
 //AddAction(1, af_none, "Add NDEF tag listener", "Listener", "Add NDEF tag listener", "Add NDEF tag listener", "addNdefListener");
 
 AddStringParam("Message", "Enter the string to share");
-AddAction(2, af_none, "Share data", "Actions", "Wait for tag and share {0}", "Wait for tag and share data via peer to peer", "share");
+AddAction(0, af_none, "Share data", "Actions", "Wait for tag and share {0}", "Wait for tag and share data via peer to peer", "share");
 
 AddStringParam("Message", "Enter the string to write");
-AddAction(3, af_none, "Write data", "Actions", "Wait for tag and write the message {0}", "Write data to tag", "write");
+AddAction(1, af_none, "Write data", "Actions", "Wait for tag and write the message {0}", "Write data to tag", "write");
 
-AddAction(4, af_none, "Erase tag", "Actions", "Wait for tag and erase it", "Wait for tag and erase it", "erase");
+AddAction(2, af_none, "Erase tag", "Actions", "Wait for tag and erase it", "Wait for tag and erase it", "erase");
 
-AddAction(7, af_none, "Read tag", "Actions", "Wait for tag and Read it", "Wait for tag and Read it", "read");
+AddAction(3, af_none, "Read tag", "Actions", "Wait for tag and Read it", "Wait for tag and Read it", "read");
 
-AddAction(5, af_none, "Remove NDEF listener", "Actions", "Removes the previously registered event listener", "Removes the previously registered event listener for NDEF tags added", "removeListener");
+AddAction(4, af_none, "Remove NDEF listener", "Actions", "Removes the previously registered event listener", "Removes the previously registered event listener for NDEF tags added", "removeListener");
 
-AddAction(6, af_none, "Check NFC Availablity", "Actions", "Check NFC Availablity", "Check NFC Availablity", "checkNFC");
+AddAction(5, af_none, "Check NFC Availability", "Actions", "Check NFC Availability", "Check NFC Availability", "checkNFC");
 
 
 ////////////////////////////////////////Check NFC Availablity

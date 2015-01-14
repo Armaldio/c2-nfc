@@ -282,9 +282,6 @@ cr.plugins_.nfc = function (runtime) {
         var self = this;
 
         nfc.addNdefListener(function (nfcEvent) {
-            //var tag = nfcEvent.tag;
-            //var tagId = nfc.bytesToHexString(tag.id);
-            //alert("tag = " + tagId + "---" + JSON.stringify(tag));
 
             var message = [
                 ndef.textRecord(text)
