@@ -11,7 +11,7 @@
 		"type":			"object",				// either "world" (appears in layout and is drawn), else "object"
 		"rotatable":	false,					// only used when "type" is "world".  Enables an angle property on the object.
 		"flags":		0						// uncomment lines to enable flags...
-					//	| pf_singleglobal		// exists project-wide, e.g. mouse, keyboard.  "type" must be "object".
+						| pf_singleglobal		// exists project-wide, e.g. mouse, keyboard.  "type" must be "object".
 					//	| pf_texture			// object has a single texture (e.g. tiled background)
 					//	| pf_position_aces		// compare/set/get x, y...
 					//	| pf_size_aces			// compare/set/get width, height...
@@ -56,7 +56,7 @@
 				
 // example				
 //AddNumberParam("Number", "Enter a number to test if positive.");
-AddCondition(0, cf_trigger, "On tag read", "Tag", "On tag read", "When any tag is triggered", "onAnyTagDiscovered");
+AddCondition(0, cf_trigger, "On tag discovered", "Tag", "On tag discovered", "When any tag is triggered", "onAnyTagDiscovered");
 
 AddCondition(1, cf_none, "NFC available", "Tag", "NFC available", "If NFC is available on this mobile", "onNFCAvailable");
 AddCondition(10, cf_none, "NFC not available", "Tag", "NFC Not  available", "If NFC isNot Not available on this mobile", "onNFCNotAvailable");
