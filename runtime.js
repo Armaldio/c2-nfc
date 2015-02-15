@@ -285,6 +285,7 @@ cr.plugins_.nfc = function (runtime) {
 
             var message = [
                 ndef.textRecord(text)
+                //ndef.createMimeRecord("text/myapp", text)
             ];
 
             nfc.write(message, function () {
@@ -299,6 +300,54 @@ cr.plugins_.nfc = function (runtime) {
         });
 
     };
+
+    Acts.prototype.launch = function (appPackage) {
+        var self = this;
+
+        nfc.addNdefListener(function (nfcEvent) {
+
+            var message = [
+                ndef.androidApplicationRecord(appPackage)
+            ];
+
+            nfc.write(message, function () {
+                self.runtime.trigger(cr.plugins_.nfc.prototype.cnds.onWriteSuccess, self);
+            }, function (err) {
+                self.runtime.trigger(cr.plugins_.nfc.prototype.cnds.onWriteFail, self);
+            });
+        }, function () {
+            self.runtime.trigger(cr.plugins_.nfc.prototype.cnds.onWaitForTag, self);
+        }, function (err) {
+            self.runtime.trigger(cr.plugins_.nfc.prototype.cnds.onErrorWaitingTag, self);
+        });
+
+    };
+
+    /*Acts.prototype.writeMime = function (type, text) {
+        var self = this;
+
+        nfc.addNdefListener(function (nfcEvent) {
+
+            var message = [
+                ndef.createMimeRecord(type, text)
+            ];
+
+            nfc.addMimeTypeListener(type, function() {
+                self.runtime.trigger(cr.plugins_.nfc.prototype.cnds.onWriteSuccess, self);//change here
+            }, function () {
+                self.runtime.trigger(cr.plugins_.nfc.prototype.cnds.onWriteSuccess, self);//here
+            }, function (err) {
+                self.runtime.trigger(cr.plugins_.nfc.prototype.cnds.onWriteFail, self);//here
+            });
+        }, function () {
+            self.runtime.trigger(cr.plugins_.nfc.prototype.cnds.onDiscoveringMimeTag, self);
+        }, function (err) {
+            self.runtime.trigger(cr.plugins_.nfc.prototype.cnds.onErrorDiscoveringMimeTag, self);
+        });
+
+    };*/
+
+    
 
     pluginProto.acts = new Acts();
 

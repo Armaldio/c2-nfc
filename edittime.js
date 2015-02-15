@@ -1,30 +1,29 @@
-﻿function GetPluginSettings()
-{
-	return {
-		"name":			"NFC",				// as appears in 'insert object' dialog, can be changed as long as "id" stays the same
-		"id":			"nfc",				// this is used to identify this plugin and is saved to the project; never change it
-		"version":		"1.0",					// (float in x.y format) Plugin version - C2 shows compatibility warnings based on this
-		"description":	"<appears at the bottom of the insert object dialog>",
-		"author":		"<your name/organisation>",
-		"help url":		"<your website or a manual entry on Scirra.com>",
-		"category":		"Connection",				// Prefer to re-use existing categories, but you can set anything here
-		"type":			"object",				// either "world" (appears in layout and is drawn), else "object"
-		"rotatable":	false,					// only used when "type" is "world".  Enables an angle property on the object.
-		"flags":		0						// uncomment lines to enable flags...
+﻿function GetPluginSettings() {
+    return {
+        "name": "NFC",				// as appears in 'insert object' dialog, can be changed as long as "id" stays the same
+        "id": "nfc",				// this is used to identify this plugin and is saved to the project; never change it
+        "version": "1.0",					// (float in x.y format) Plugin version - C2 shows compatibility warnings based on this
+        "description": "Allow you to interact with NFC",
+        "author": "Armaldio",
+        "help url": "https://www.scirra.com/forum/viewtopic.php?f=153&t=122476&p=885174#p885174",
+        "category": "Connection",				// Prefer to re-use existing categories, but you can set anything here
+        "type": "object",				// either "world" (appears in layout and is drawn), else "object"
+        "rotatable": false,					// only used when "type" is "world".  Enables an angle property on the object.
+        "flags": 0						// uncomment lines to enable flags...
 						| pf_singleglobal		// exists project-wide, e.g. mouse, keyboard.  "type" must be "object".
-					//	| pf_texture			// object has a single texture (e.g. tiled background)
-					//	| pf_position_aces		// compare/set/get x, y...
-					//	| pf_size_aces			// compare/set/get width, height...
-					//	| pf_angle_aces			// compare/set/get angle (recommended that "rotatable" be set to true)
-					//	| pf_appearance_aces	// compare/set/get visible, opacity...
-					//	| pf_tiling				// adjusts image editor features to better suit tiled images (e.g. tiled background)
-					//	| pf_animations			// enables the animations system.  See 'Sprite' for usage
-					//	| pf_zorder_aces		// move to top, bottom, layer...
-					//  | pf_nosize				// prevent resizing in the editor
-					//	| pf_effects			// allow WebGL shader effects to be added
-					//  | pf_predraw			// set for any plugin which draws and is not a sprite (i.e. does not simply draw
-												// a single non-tiling image the size of the object) - required for effects to work properly
-	};
+        //	| pf_texture			// object has a single texture (e.g. tiled background)
+        //	| pf_position_aces		// compare/set/get x, y...
+        //	| pf_size_aces			// compare/set/get width, height...
+        //	| pf_angle_aces			// compare/set/get angle (recommended that "rotatable" be set to true)
+        //	| pf_appearance_aces	// compare/set/get visible, opacity...
+        //	| pf_tiling				// adjusts image editor features to better suit tiled images (e.g. tiled background)
+        //	| pf_animations			// enables the animations system.  See 'Sprite' for usage
+        //	| pf_zorder_aces		// move to top, bottom, layer...
+        //  | pf_nosize				// prevent resizing in the editor
+        //	| pf_effects			// allow WebGL shader effects to be added
+        //  | pf_predraw			// set for any plugin which draws and is not a sprite (i.e. does not simply draw
+        // a single non-tiling image the size of the object) - required for effects to work properly
+    };
 };
 
 ////////////////////////////////////////
@@ -53,7 +52,7 @@
 //				display_str,		// as appears in event sheet - use {0}, {1} for parameters and also <b></b>, <i></i>
 //				description,		// appears in event wizard dialog when selected
 //				script_name);		// corresponding runtime function name
-				
+
 // example				
 //AddNumberParam("Number", "Enter a number to test if positive.");
 AddCondition(0, cf_trigger, "On tag discovered", "Tag", "On tag discovered", "When any tag is triggered", "onAnyTagDiscovered");
@@ -85,6 +84,10 @@ AddCondition(13, cf_trigger, "on removed trigger successfully", "Tag", "on remov
 
 AddCondition(14, cf_trigger, "on error removing trigger", "Tag", "on error removing trigger", "on error removing trigger", "onErrorListenerRemoved");
 
+AddCondition(15, cf_trigger, "on discover mime type", "Tag", "on discover mime type", "on discover mime type", "onDiscoveringMimeTag");
+
+AddCondition(16, cf_trigger, "on error discovering mime type", "Tag", "on error discovering mime type", "on error discovering mime type", "onErrorDiscoveringMimeTag");
+//TODO:add other conditions
 
 ////////////////////////////////////////
 // Actions
@@ -116,7 +119,12 @@ AddAction(4, af_none, "Remove NDEF listener", "Actions", "Removes the previously
 
 AddAction(5, af_none, "Check NFC Availability", "Actions", "Check NFC Availability", "Check NFC Availability", "checkNFC");
 
+AddStringParam("Package", "The app to launch", '"not.yes.specified"');
+AddAction(6, af_none, "Launch app", "Actions", "Launch app", "Launch an app corresponding to its package name", "launch");
 
+/*AddStringParam("Mime type", '"text/mymime"');
+AddStringParam("Message", "Enter the string to write");
+AddAction(6, af_none, "Write data with MIME type", "Actions", "Wait for tag and write the message {0} with MIME type", "Write data to tag with MIME type", "writeMime");*/
 ////////////////////////////////////////Check NFC Availablity
 // Expressions
 
@@ -146,71 +154,61 @@ ACESDone();
 
 var property_list = [
 	//new cr.Property(ept_integer, 	"My property",		77,		"An example property.")
-	];
-	
+];
+
 // Called by IDE when a new object type is to be created
-function CreateIDEObjectType()
-{
-	return new IDEObjectType();
+function CreateIDEObjectType() {
+    return new IDEObjectType();
 }
 
 // Class representing an object type in the IDE
-function IDEObjectType()
-{
-	assert2(this instanceof arguments.callee, "Constructor called as a function");
+function IDEObjectType() {
+    assert2(this instanceof arguments.callee, "Constructor called as a function");
 }
 
 // Called by IDE when a new object instance of this type is to be created
-IDEObjectType.prototype.CreateInstance = function(instance)
-{
-	return new IDEInstance(instance);
+IDEObjectType.prototype.CreateInstance = function (instance) {
+    return new IDEInstance(instance);
 }
 
 // Class representing an individual instance of an object in the IDE
-function IDEInstance(instance, type)
-{
-	assert2(this instanceof arguments.callee, "Constructor called as a function");
-	
-	// Save the constructor parameters
-	this.instance = instance;
-	this.type = type;
-	
-	// Set the default property values from the property table
-	this.properties = {};
-	
-	for (var i = 0; i < property_list.length; i++)
-		this.properties[property_list[i].name] = property_list[i].initial_value;
-		
-	// Plugin-specific variables
-	// this.myValue = 0...
+function IDEInstance(instance, type) {
+    assert2(this instanceof arguments.callee, "Constructor called as a function");
+
+    // Save the constructor parameters
+    this.instance = instance;
+    this.type = type;
+
+    // Set the default property values from the property table
+    this.properties = {};
+
+    for (var i = 0; i < property_list.length; i++)
+        this.properties[property_list[i].name] = property_list[i].initial_value;
+
+    // Plugin-specific variables
+    // this.myValue = 0...
 }
 
 // Called when inserted via Insert Object Dialog for the first time
-IDEInstance.prototype.OnInserted = function()
-{
+IDEInstance.prototype.OnInserted = function () {
 }
 
 // Called when double clicked in layout
-IDEInstance.prototype.OnDoubleClicked = function()
-{
+IDEInstance.prototype.OnDoubleClicked = function () {
 }
 
 // Called after a property has been changed in the properties bar
-IDEInstance.prototype.OnPropertyChanged = function(property_name)
-{
+IDEInstance.prototype.OnPropertyChanged = function (property_name) {
 }
 
 // For rendered objects to load fonts or textures
-IDEInstance.prototype.OnRendererInit = function(renderer)
-{
+IDEInstance.prototype.OnRendererInit = function (renderer) {
 }
 
 // Called to draw self in the editor if a layout object
-IDEInstance.prototype.Draw = function(renderer)
-{
+IDEInstance.prototype.Draw = function (renderer) {
 }
 
 // For rendered objects to release fonts or textures
-IDEInstance.prototype.OnRendererReleased = function(renderer)
-{
+IDEInstance.prototype.OnRendererReleased = function (renderer) {
 }
