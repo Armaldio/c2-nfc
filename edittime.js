@@ -10,7 +10,7 @@
         "type": "object",				// either "world" (appears in layout and is drawn), else "object"
         "rotatable": false,					// only used when "type" is "world".  Enables an angle property on the object.
         "flags": 0						// uncomment lines to enable flags...
-						| pf_singleglobal		// exists project-wide, e.g. mouse, keyboard.  "type" must be "object".
+        | pf_singleglobal		// exists project-wide, e.g. mouse, keyboard.  "type" must be "object".
         //	| pf_texture			// object has a single texture (e.g. tiled background)
         //	| pf_position_aces		// compare/set/get x, y...
         //	| pf_size_aces			// compare/set/get width, height...
@@ -119,12 +119,12 @@ AddAction(4, af_none, "Remove NDEF listener", "Actions", "Removes the previously
 
 AddAction(5, af_none, "Check NFC Availability", "Actions", "Check NFC Availability", "Check NFC Availability", "checkNFC");
 
-AddStringParam("Package", "The app to launch", '"not.yes.specified"');
+AddStringParam("Package", "The app to launch", '"not.yet.specified"');
 AddAction(6, af_none, "Launch app", "Actions", "Launch app", "Launch an app corresponding to its package name", "launch");
 
 /*AddStringParam("Mime type", '"text/mymime"');
-AddStringParam("Message", "Enter the string to write");
-AddAction(6, af_none, "Write data with MIME type", "Actions", "Wait for tag and write the message {0} with MIME type", "Write data to tag with MIME type", "writeMime");*/
+ AddStringParam("Message", "Enter the string to write");
+ AddAction(6, af_none, "Write data with MIME type", "Actions", "Wait for tag and write the message {0} with MIME type", "Write data to tag with MIME type", "writeMime");*/
 ////////////////////////////////////////Check NFC Availablity
 // Expressions
 
@@ -137,7 +137,11 @@ AddAction(6, af_none, "Write data with MIME type", "Actions", "Wait for tag and 
 //				 description);	// description in expressions panel
 
 // example
-AddExpression(0, ef_return_any, "Return the last readed datas", "Datas", "getLastData", "Return the last readed datas");
+AddExpression(0, ef_deprecated | ef_return_any, "Return the last readed datas", "Datas", "getLastData", "Return the last readed datas");
+AddExpression(1, ef_return_any, "Return the last readed datas as raw JSON", "Datas", "getRawData", "Return the last readed datas");
+
+AddStringParam("Raw Data", "The raw data from the NFC expression", 'NFC.getRawData');
+AddExpression(2, ef_return_any, "Return the decoded payload based on the raw data", "Datas", "getPayload", "Return the payload as a string");
 
 ////////////////Return the last readed datas////////////////////////
 ACESDone();
@@ -153,7 +157,7 @@ ACESDone();
 // new cr.Property(ept_link,		name,	link_text,		description, "firstonly")		// has no associated value; simply calls "OnPropertyChanged" on click
 
 var property_list = [
-	//new cr.Property(ept_integer, 	"My property",		77,		"An example property.")
+    //new cr.Property(ept_integer, 	"My property",		77,		"An example property.")
 ];
 
 // Called by IDE when a new object type is to be created

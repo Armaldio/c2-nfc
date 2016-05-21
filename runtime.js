@@ -32,7 +32,8 @@ cr.plugins_.nfc = function (runtime) {
     var typeProto = pluginProto.Type.prototype;
 
     // called on startup for each object type
-    typeProto.onCreate = function () { };
+    typeProto.onCreate = function () {
+    };
 
     /////////////////////////////////////
     // Instance class
@@ -58,7 +59,8 @@ cr.plugins_.nfc = function (runtime) {
     // called whenever an instance is destroyed
     // note the runtime may keep the object after this call for recycling; be sure
     // to release/recycle/reset any references to other objects in this function.
-    instanceProto.onDestroy = function () { };
+    instanceProto.onDestroy = function () {
+    };
 
     // called when saving the full state of the game
     instanceProto.saveToJSON = function () {
@@ -81,12 +83,14 @@ cr.plugins_.nfc = function (runtime) {
     };
 
     // only called if a layout object - draw to a canvas 2D context
-    instanceProto.draw = function (ctx) { };
+    instanceProto.draw = function (ctx) {
+    };
 
     // only called if a layout object in WebGL mode - draw to the WebGL context
     // 'glw' is not a WebGL context, it's a wrapper - you can find its methods in GLWrap.js in the install
     // directory or just copy what other plugins do.
-    instanceProto.drawGL = function (glw) { };
+    instanceProto.drawGL = function (glw) {
+    };
 
     // The comments around these functions ensure they are removed when exporting, since the
     // debugger code is no longer relevant after publishing.
@@ -123,7 +127,8 @@ cr.plugins_.nfc = function (runtime) {
 
     //////////////////////////////////////
     // Conditions
-    function Cnds() { };
+    function Cnds() {
+    };
 
     // the example condition
     Cnds.prototype.onAnyTagDiscovered = function () {
@@ -187,26 +192,26 @@ cr.plugins_.nfc = function (runtime) {
     };
 
 
-
     // ... other conditions here ...
 
     pluginProto.cnds = new Cnds();
 
     //////////////////////////////////////
     // Actions
-    function Acts() { };
+    function Acts() {
+    };
 
 
     Acts.prototype.checkNFC = function () {
         var self = this;
 
         /*nfc.enabled(function () {
-            self.runtime.trigger(cr.plugins_.nfc.prototype.cnds.onNFCAvailable, self);
-        }, function (err) {
-            self.runtime.trigger(cr.plugins_.nfc.prototype.cnds.onNFCNotAvailable, self);
-            //TODO: Put err in an expression
-        });
-        */
+         self.runtime.trigger(cr.plugins_.nfc.prototype.cnds.onNFCAvailable, self);
+         }, function (err) {
+         self.runtime.trigger(cr.plugins_.nfc.prototype.cnds.onNFCNotAvailable, self);
+         //TODO: Put err in an expression
+         });
+         */
 
         return true;
     };
@@ -266,7 +271,7 @@ cr.plugins_.nfc = function (runtime) {
 
         nfc.addNdefListener(function (nfcEvent) {
             //trigger
-            lastData = JSON.stringify(nfcEvent.tag)
+            lastData = JSON.stringify(nfcEvent.tag);
             self.runtime.trigger(cr.plugins_.nfc.prototype.cnds.onReadSuccess, self);
         }, function () {
             //win
@@ -324,36 +329,36 @@ cr.plugins_.nfc = function (runtime) {
     };
 
     /*Acts.prototype.writeMime = function (type, text) {
-        var self = this;
+     var self = this;
 
-        nfc.addNdefListener(function (nfcEvent) {
+     nfc.addNdefListener(function (nfcEvent) {
 
-            var message = [
-                ndef.createMimeRecord(type, text)
-            ];
+     var message = [
+     ndef.createMimeRecord(type, text)
+     ];
 
-            nfc.addMimeTypeListener(type, function() {
-                self.runtime.trigger(cr.plugins_.nfc.prototype.cnds.onWriteSuccess, self);//change here
-            }, function () {
-                self.runtime.trigger(cr.plugins_.nfc.prototype.cnds.onWriteSuccess, self);//here
-            }, function (err) {
-                self.runtime.trigger(cr.plugins_.nfc.prototype.cnds.onWriteFail, self);//here
-            });
-        }, function () {
-            self.runtime.trigger(cr.plugins_.nfc.prototype.cnds.onDiscoveringMimeTag, self);
-        }, function (err) {
-            self.runtime.trigger(cr.plugins_.nfc.prototype.cnds.onErrorDiscoveringMimeTag, self);
-        });
+     nfc.addMimeTypeListener(type, function() {
+     self.runtime.trigger(cr.plugins_.nfc.prototype.cnds.onWriteSuccess, self);//change here
+     }, function () {
+     self.runtime.trigger(cr.plugins_.nfc.prototype.cnds.onWriteSuccess, self);//here
+     }, function (err) {
+     self.runtime.trigger(cr.plugins_.nfc.prototype.cnds.onWriteFail, self);//here
+     });
+     }, function () {
+     self.runtime.trigger(cr.plugins_.nfc.prototype.cnds.onDiscoveringMimeTag, self);
+     }, function (err) {
+     self.runtime.trigger(cr.plugins_.nfc.prototype.cnds.onErrorDiscoveringMimeTag, self);
+     });
 
-    };*/
+     };*/
 
-    
 
     pluginProto.acts = new Acts();
 
     //////////////////////////////////////
     // Expressions
-    function Exps() { };
+    function Exps() {
+    };
 
     Exps.prototype.getLastData = function (ret) // 'ret' must always be the first parameter - always return the expression's result through it!
     {
@@ -363,6 +368,17 @@ cr.plugins_.nfc = function (runtime) {
         ret.set_any(lastData);			// for ef_return_any, accepts either a number or string
     };
 
+    Exps.prototype.getRawData = function (ret) // 'ret' must always be the first parameter - always return the expression's result through it!
+    {
+        ret.set_any(lastData);			// for ef_return_any, accepts either a number or string
+    };
+
+    Exps.prototype.getPayload = function (ret, rawdata) // 'ret' must always be the first parameter - always return the expression's result through it!
+    {
+        var pl = JSON.parse(rawdata);
+        var r = nfc.bytesToString(pl.ndefMessage[0]["payload"]).substring(3);
+        ret.set_any(r);
+    };
 
     pluginProto.exps = new Exps();
 
